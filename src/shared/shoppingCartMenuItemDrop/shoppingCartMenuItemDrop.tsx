@@ -21,6 +21,11 @@ import product1 from "../../../assets/images/product1.jpg";
 import SearchIcon from "@mui/icons-material/Search";
 import { ShoppingCartItemType } from "../../features/shoppingCart/shoppingCart.type";
 import { useState } from "react";
+import { useAppDispatch } from "../../app/hooks";
+import {
+  updateShoppingCart,
+  deleteShoppingCartItems,
+} from "../../features/shoppingCart/shoppingCartSlice";
 
 interface IShoppingCartProductProps {
   item: ShoppingCartItemType;
@@ -29,111 +34,136 @@ interface IShoppingCartProductProps {
 const ShoppingCartMenuItemDrop: React.FC<IShoppingCartProductProps> = ({
   item,
 }) => {
+  const dispatch = useAppDispatch();
   const [amount, setAmount] = useState<number>(item.amout);
+  const [totalPrice, setTotalPrice] = useState<number>(
+    item.product.fields.priceWithDiscount
+  );
   return (
     <>
-    <MenuItem sx={{ mb:"5px"}} >
-      <Grid xs={4}>
-        <Grid container>
-          <img
-            src={item.product.fields.image[0].url}
-            width="70px"
-            height="80px"
-          />
-        </Grid>
-        {/* <Grid
-          sx={{
-            height: "20px",
-            mx: "auto",
-            mt: "20px",
-            textAlign: "center",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <Box
+      <MenuItem sx={{ mb: "5px" }}>
+        <Grid xs={4}>
+          <Grid container>
+            <img
+              src={item.product.fields.image[0].url}
+              width="70px"
+              height="80px"
+            />
+          </Grid>
+          <Grid
             sx={{
-              display: "flex",
-              width: "100%",
-              height: "35px",
-              boxShadow: "1px 1px 1px black",
-              bgcolor: "yellow",
-              borderRadius: "10px",
-              justifyContent: "space-between",
+              height: "20px",
+              mx: "auto",
+              mt: "20px",
+              textAlign: "center",
+              justifyContent: "center",
+              alignItems: "center",
             }}
           >
-            <IconButton aria-label="delete">
-              <AddIcon
-                fontSize="small"
-                onClick={() => {
-                  setAmount(amount + 1);
-                }}
-              />
-            </IconButton>
-            <Typography mt="7px">{amount}</Typography>
-            <IconButton aria-label="delete">
-              <MinimizeIcon
-                fontSize="large"
-                sx={{ paddingBottom: "12px" }}
-                onClick={() => {
-                  if (amount > 1) {
-                    setAmount(amount - 1);
-                  }
-                }}
-              />
-            </IconButton>
-          </Box>
-        </Grid> */}
-      </Grid>
-      <Grid xs={8}>
-        <List>
-          <ListItem>
-            <Grid>
+            <Box
+              sx={{
+                display: "flex",
+                width: "85%",
+                height: "35px",
+                boxShadow: "1px 1px 1px black",
+                bgcolor: "yellow",
+                borderRadius: "10px",
+                justifyContent: "space-between",
+              }}
+            >
+              <IconButton aria-label="delete">
+                <AddIcon
+                  fontSize="small"
+                  onClick={() => {
+                    if (amount < 6) {
+                      setAmount(amount + 1);
+                      dispatch(
+                        updateShoppingCart({
+                          product: item.product,
+                          amout: amount + 1,
+                          totalPrice:
+                            (amount + 1) *
+                            item.product.fields.priceWithDiscount,
+                        })
+                      );
+                    }
+                  }}
+                />
+              </IconButton>
+              <Typography mt="7px">{amount}</Typography>
+              <IconButton aria-label="delete">
+                <MinimizeIcon
+                  fontSize="large"
+                  sx={{ paddingBottom: "12px" }}
+                  onClick={() => {
+                    if (amount === 1) {
+                      dispatch(deleteShoppingCartItems(item.product.id));
+                    } else if (amount > 1) {
+                      setAmount(amount - 1);
+                      dispatch(
+                        updateShoppingCart({
+                          product: item.product,
+                          amout: amount - 1,
+                          totalPrice:
+                            (amount - 1) *
+                            item.product.fields.priceWithDiscount,
+                        })
+                      );
+                    }
+                  }}
+                />
+              </IconButton>
+            </Box>
+          </Grid>
+        </Grid>
+        <Grid xs={8}>
+          <List>
+            <ListItem>
+              <Grid>
+                <Typography
+                  sx={{
+                    color: "black",
+                    wordWrap: "break-word",
+                    whiteSpace: "pre-wrap",
+                    textAlign: "start",
+                  }}
+                  variant="body2"
+                >
+                  {item.product.fields.name}
+                </Typography>
+              </Grid>
+            </ListItem>
+            <ListItem>
+              <CircleIcon sx={{ color: "yellow" }} fontSize="small" />
               <Typography
-                sx={{
-                  color: "black",
-                  wordWrap: "break-word",
-                  whiteSpace: "pre-wrap",
-                  textAlign: "start",
-                }}
-                variant="body2"
+                sx={{ display: "inline", color: "black", mr: "5px" }}
+                variant="caption"
               >
-                {item.product.fields.name}
+                زرد
               </Typography>
-            </Grid>
-          </ListItem>
-          <ListItem>
-            <CircleIcon sx={{ color: "yellow" }} fontSize="small" />
-            <Typography
-              sx={{ display: "inline", color: "black", mr: "5px" }}
-              variant="caption"
-            >
-              زرد
-            </Typography>
-          </ListItem>
-          <ListItem>
-            <GppGoodIcon fontSize="small" />
-            <Typography
-              sx={{ display: "inline", mr: "5px", color: "black" }}
-              variant="caption"
-            >
-              گارانتی 18 ماهه
-            </Typography>
-          </ListItem>
-          <ListItem sx={{justifyContent:"end"}}>
-            <Typography variant="subtitle1" mr="5px">
-              {item.product.fields.priceWithDiscount}
-            </Typography>
-            <Typography variant="caption" mr="5px">
-              تومان
-            </Typography>
-          </ListItem>
-        </List>
-      </Grid>
-      
-    </MenuItem>
-    <Divider />
-</>
+            </ListItem>
+            <ListItem>
+              <GppGoodIcon fontSize="small" />
+              <Typography
+                sx={{ display: "inline", mr: "5px", color: "black" }}
+                variant="caption"
+              >
+                گارانتی 18 ماهه
+              </Typography>
+            </ListItem>
+            <ListItem sx={{ justifyContent: "end" }}>
+              <Typography variant="subtitle1" mr="5px">
+                {item.product.fields.priceWithDiscount}
+              </Typography>
+              <Typography variant="caption" mr="5px">
+                تومان
+              </Typography>
+            </ListItem>
+          </List>
+        </Grid>
+      </MenuItem>
+      <Divider />
+    </>
   );
 };
 

@@ -20,7 +20,10 @@ import ProductCartTitle from "../../shared/productCartTitle/productCartTitle";
 import { useEffect, useState } from "react";
 import { useAppDispatch } from "../../app/hooks";
 import { ShoppingCartItemType } from "./shoppingCart.type";
-import { deleteShoppingCartItems, updateShoppingCart } from "./shoppingCartSlice";
+import {
+  deleteShoppingCartItems,
+  updateShoppingCart,
+} from "./shoppingCartSlice";
 
 interface IShoppingCartProductProps {
   item: ShoppingCartItemType;
@@ -28,13 +31,21 @@ interface IShoppingCartProductProps {
 
 const ShoppingCartProduct: React.FC<IShoppingCartProductProps> = ({ item }) => {
   const dispatch = useAppDispatch();
-  const [showAmount, setShowAmount] = useState<boolean>(false);
   const [amount, setAmount] = useState<number>(item.amout);
+  const [totalPrice, setTotalPrice] = useState<number>(
+    item.product.fields.priceWithDiscount
+  );
+  const [totaldiscount, setTotalDiscount] = useState<number>(
+    item.product.fields.price - item.product.fields.priceWithDiscount
+  );
 
-  // useEffect(() => {
-  //   setAmount(item.amout)
-
-  // }, [])
+  useEffect(() => {
+    setTotalPrice(amount * item.product.fields.priceWithDiscount);
+    setTotalDiscount(
+      amount *
+        (item.product.fields.price - item.product.fields.priceWithDiscount)
+    );
+  }, [amount]);
 
   return (
     <>
@@ -50,7 +61,7 @@ const ShoppingCartProduct: React.FC<IShoppingCartProductProps> = ({ item }) => {
             borderRadius: "5px",
             boxShadow: "1px 1px 1px black",
             bgcolor: "#F5F5F5",
-            py:{md:"10px"}
+            py: { md: "10px" },
           }}
         >
           <Grid
@@ -88,13 +99,18 @@ const ShoppingCartProduct: React.FC<IShoppingCartProductProps> = ({ item }) => {
                   <AddIcon
                     fontSize="small"
                     onClick={() => {
-if(amount < 6){
-  setAmount(amount + 1);
-  dispatch(
-    updateShoppingCart({ product: item.product, amout: amount + 1 })
-  );
-}
-                      
+                      if (amount < 6) {
+                        setAmount(amount + 1);
+                        dispatch(
+                          updateShoppingCart({
+                            product: item.product,
+                            amout: amount + 1,
+                            totalPrice:
+                              (amount + 1) *
+                              item.product.fields.priceWithDiscount,
+                          })
+                        );
+                      }
                     }}
                   />
                 </IconButton>
@@ -104,27 +120,20 @@ if(amount < 6){
                     fontSize="large"
                     sx={{ paddingBottom: "13px" }}
                     onClick={() => {
-                      // setAmount(amount - 1);
-                      // dispatch(
-                      //   updateShoppingCart({ product: item.product, amout: amount - 1 })
-                      // );.
                       if (amount === 1) {
-                        setAmount(amount - 1);
-                        dispatch(
-                          deleteShoppingCartItems(
-                           item.product.id,
-                          )
-                        );
+                        dispatch(deleteShoppingCartItems(item.product.id));
                       } else if (amount > 1) {
                         setAmount(amount - 1);
                         dispatch(
                           updateShoppingCart({
                             product: item.product,
                             amout: amount - 1,
+                            totalPrice:
+                              (amount - 1) *
+                              item.product.fields.priceWithDiscount,
                           })
                         );
                       }
-                      
                     }}
                   />
                 </IconButton>
@@ -134,13 +143,13 @@ if(amount < 6){
           <Grid container xs={10} pr="10px">
             <List>
               <ListItem sx={{ justifyContent: "space-between" }}>
-              <Typography
-      variant="body2"
-      color="black"
-      style={{ textAlign: "start", paddingBottom: "10px" }}
-    >
-      {item.product.fields.name}
-    </Typography>
+                <Typography
+                  variant="body2"
+                  color="black"
+                  style={{ textAlign: "start", paddingBottom: "10px" }}
+                >
+                  {item.product.fields.name}
+                </Typography>
               </ListItem>
               <ListItem>
                 <ListItem sx={{ width: "40%" }}>
@@ -148,7 +157,9 @@ if(amount < 6){
                     رنگ:
                   </Typography>
                   <CircleIcon sx={{ color: "yellow" }} fontSize="small" />
-                  <Typography variant="inherit" mr="5px">زرد</Typography>
+                  <Typography variant="inherit" mr="5px">
+                    زرد
+                  </Typography>
                 </ListItem>
                 <ListItem sx={{ width: "40%" }}>
                   <GppGoodIcon fontSize="small" />
@@ -174,7 +185,7 @@ if(amount < 6){
                       قیمت نهایی :
                     </Typography>
                     <Typography>
-                      {item.product.fields.priceWithDiscount}
+                      {totalPrice}
                       <span style={{ paddingRight: "10px" }}>تومان</span>
                     </Typography>
                   </Grid>
@@ -185,8 +196,7 @@ if(amount < 6){
                       تخفیف :
                     </Typography>
                     <Typography>
-                      {item.product.fields.price -
-                        item.product.fields.priceWithDiscount}
+                      {totaldiscount}
                       <span style={{ paddingRight: "10px" }}>تومان</span>
                     </Typography>
                   </Grid>
@@ -199,6 +209,19 @@ if(amount < 6){
           </Grid>
         </Grid>
       </Grid>
+
+
+
+
+
+
+
+
+
+
+
+
+
 
       <Card
         sx={{
@@ -219,7 +242,7 @@ if(amount < 6){
             marginLeft: "8px",
           }}
         >
-          <img src={product1} width="100px" height="140px" />
+          <img src={item.product.fields.image[0].url} width="100px" height="140px" />
 
           <Grid container sx={{ justifyContent: "end" }} mt="15px">
             <Box
@@ -233,10 +256,23 @@ if(amount < 6){
               }}
             >
               <IconButton aria-label="delete">
-                <AddIcon fontSize="small" 
-                                    onClick={() => {
-                                      setAmount(amount + 1);
-                                    }}/>
+                <AddIcon
+                  fontSize="small"
+                  onClick={() => {
+                    if (amount < 6) {
+                      setAmount(amount + 1);
+                      dispatch(
+                        updateShoppingCart({
+                          product: item.product,
+                          amout: amount + 1,
+                          totalPrice:
+                            (amount + 1) *
+                            item.product.fields.priceWithDiscount,
+                        })
+                      );
+                    }
+                  }}
+                />
               </IconButton>
               <Typography pt="3px">{amount}</Typography>
               <IconButton aria-label="delete">
@@ -244,8 +280,19 @@ if(amount < 6){
                   fontSize="large"
                   sx={{ pb: "14px", pl: "10px" }}
                   onClick={() => {
-                    if (amount > 1) {
+                    if (amount === 1) {
+                      dispatch(deleteShoppingCartItems(item.product.id));
+                    } else if (amount > 1) {
                       setAmount(amount - 1);
+                      dispatch(
+                        updateShoppingCart({
+                          product: item.product,
+                          amout: amount - 1,
+                          totalPrice:
+                            (amount - 1) *
+                            item.product.fields.priceWithDiscount,
+                        })
+                      );
                     }
                   }}
                 />
@@ -255,7 +302,7 @@ if(amount < 6){
         </CardMedia>
         <Grid container sx={{ display: "flex", flexDirection: "column" }}>
           <CardContent sx={{ padding: 0 }}>
-            <ProductCartTitle title={item.product.fields.name}/>
+            <ProductCartTitle title={item.product.fields.name} />
             <List>
               <ListItem>
                 <GppGoodIcon fontSize="small" />
@@ -286,7 +333,7 @@ if(amount < 6){
                   variant="subtitle1"
                   sx={{ display: "flex", flexDirection: "row", mr: "5px" }}
                 >
-                  {item.product.fields.priceWithDiscount}
+                  {totalPrice}
                   <Typography mr={1} variant="overline">
                     تومان
                   </Typography>

@@ -14,29 +14,36 @@ export const shoppingcartSlice = createSlice({
   name: "shoppingcart",
   initialState,
   reducers: {
-    addToShoppingCart: (state: ShoppingCartState, action: PayloadAction<ShoppingCartItemType>) => {
+    addToShoppingCart: (
+      state: ShoppingCartState,
+      action: PayloadAction<ShoppingCartItemType>
+    ) => {
       state.items.push(action.payload);
     },
 
-    updateShoppingCart: (state: ShoppingCartState, action: PayloadAction<ShoppingCartItemType>) => {
+    updateShoppingCart: (
+      state: ShoppingCartState,
+      action: PayloadAction<ShoppingCartItemType>
+    ) => {
       state.items = state.items.map((item: ShoppingCartItemType) =>
         item.product.id === action.payload.product.id
           ? (item = action.payload)
           : item
       );
     },
-    getShoppingCartItems: (state: ShoppingCartState, action) => {
-        state.items = action.payload;
-      },
-      deleteShoppingCartItems: (state: ShoppingCartState, action) => {
-        state.items= state.items.filter((item:ShoppingCartItemType) => item.product.id !== action.payload)
-      },
-
-
+    deleteShoppingCartItems: (state: ShoppingCartState, action) => {
+      state.items = state.items.filter(
+        (item: ShoppingCartItemType) => item.product.id !== action.payload
+      );
+    },
   },
 });
 
-export const { addToShoppingCart, updateShoppingCart, getShoppingCartItems, deleteShoppingCartItems } = shoppingcartSlice.actions;
+export const {
+  addToShoppingCart,
+  updateShoppingCart,
+  deleteShoppingCartItems,
+} = shoppingcartSlice.actions;
 
 export const selectShoppingCart = (state: RootState) => state.shoppingcart;
 

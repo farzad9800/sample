@@ -18,6 +18,7 @@ import ProductCartTitle from "../../shared/productCartTitle/productCartTitle";
 import RatingDisplay from "../../shared/ratingDisplay/ratingDisplay";
 import {
   addToShoppingCart,
+  deleteShoppingCartItems,
   updateShoppingCart,
 } from "../shoppingCart/shoppingCartSlice";
 import { ProductType } from "./product.type";
@@ -97,7 +98,13 @@ const Product: React.FC<IProduct> = ({ product }) => {
               variant="contained"
               startIcon={<AddShoppingCartIcon sx={{ marginLeft: "10px" }} />}
               onClick={() => {
-                dispatch(addToShoppingCart({ product, amout: amount }));
+                dispatch(
+                  addToShoppingCart({
+                    product,
+                    amout: amount,
+                    totalPrice: product.fields.priceWithDiscount,
+                  })
+                );
                 setShowAmount(true);
               }}
             >
@@ -132,7 +139,12 @@ const Product: React.FC<IProduct> = ({ product }) => {
                         if (amount < 6) {
                           setAmount(amount + 1);
                           dispatch(
-                            updateShoppingCart({ product, amout: amount + 1 })
+                            updateShoppingCart({
+                              product,
+                              amout: amount + 1,
+                              totalPrice:
+                                (amount + 1) * product.fields.priceWithDiscount,
+                            })
                           );
                         }
                       }}
@@ -144,16 +156,18 @@ const Product: React.FC<IProduct> = ({ product }) => {
                       fontSize="large"
                       sx={{ paddingBottom: "13px" }}
                       onClick={() => {
+                        setShowAmount(false);
                         if (amount === 1) {
-                          setShowAmount(false);
-                          setAmount(amount - 1);
-                          dispatch(
-                            updateShoppingCart({ product, amout: amount - 1 })
-                          );
+                          dispatch(deleteShoppingCartItems(product.id));
                         } else if (amount > 1) {
                           setAmount(amount - 1);
                           dispatch(
-                            updateShoppingCart({ product, amout: amount - 1 })
+                            updateShoppingCart({
+                              product: product,
+                              amout: amount - 1,
+                              totalPrice:
+                                (amount - 1) * product.fields.priceWithDiscount,
+                            })
                           );
                         }
                       }}
@@ -250,7 +264,13 @@ const Product: React.FC<IProduct> = ({ product }) => {
                     color: "black",
                   }}
                   onClick={() => {
-                    dispatch(addToShoppingCart({ product, amout: amount }));
+                    dispatch(
+                      addToShoppingCart({
+                        product,
+                        amout: amount,
+                        totalPrice: product.fields.priceWithDiscount,
+                      })
+                    );
                     setShowAmount(true);
                   }}
                 >
@@ -287,6 +307,9 @@ const Product: React.FC<IProduct> = ({ product }) => {
                                 updateShoppingCart({
                                   product,
                                   amout: amount + 1,
+                                  totalPrice:
+                                    (amount + 1) *
+                                    product.fields.priceWithDiscount,
                                 })
                               );
                             }
@@ -299,21 +322,18 @@ const Product: React.FC<IProduct> = ({ product }) => {
                           fontSize="large"
                           sx={{ pb: "12px", pl: "15px" }}
                           onClick={() => {
+                            setShowAmount(false);
                             if (amount === 1) {
-                              setShowAmount(false);
-                              setAmount(amount - 1);
-                              dispatch(
-                                updateShoppingCart({
-                                  product,
-                                  amout: amount - 1,
-                                })
-                              );
+                              dispatch(deleteShoppingCartItems(product.id));
                             } else if (amount > 1) {
                               setAmount(amount - 1);
                               dispatch(
                                 updateShoppingCart({
-                                  product,
+                                  product: product,
                                   amout: amount - 1,
+                                  totalPrice:
+                                    (amount - 1) *
+                                    product.fields.priceWithDiscount,
                                 })
                               );
                             }
