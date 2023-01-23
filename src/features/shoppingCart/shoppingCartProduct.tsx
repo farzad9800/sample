@@ -31,7 +31,7 @@ interface IShoppingCartProductProps {
 
 const ShoppingCartProduct: React.FC<IShoppingCartProductProps> = ({ item }) => {
   const dispatch = useAppDispatch();
-  const [amount, setAmount] = useState<number>(item.amout);
+
   const [totalPrice, setTotalPrice] = useState<number>(
     item.product.fields.priceWithDiscount
   );
@@ -40,12 +40,12 @@ const ShoppingCartProduct: React.FC<IShoppingCartProductProps> = ({ item }) => {
   );
 
   useEffect(() => {
-    setTotalPrice(amount * item.product.fields.priceWithDiscount);
+    setTotalPrice(item.amout * item.product.fields.priceWithDiscount);
     setTotalDiscount(
-      amount *
+      item.amout *
         (item.product.fields.price - item.product.fields.priceWithDiscount)
     );
-  }, [amount]);
+  }, [item.amout]);
 
   return (
     <>
@@ -99,14 +99,13 @@ const ShoppingCartProduct: React.FC<IShoppingCartProductProps> = ({ item }) => {
                   <AddIcon
                     fontSize="small"
                     onClick={() => {
-                      if (amount < 6) {
-                        setAmount(amount + 1);
+                      if (item.amout < 6) {
                         dispatch(
                           updateShoppingCart({
                             product: item.product,
-                            amout: amount + 1,
+                            amout: item.amout + 1,
                             totalPrice:
-                              (amount + 1) *
+                              (item.amout + 1) *
                               item.product.fields.priceWithDiscount,
                           })
                         );
@@ -114,22 +113,21 @@ const ShoppingCartProduct: React.FC<IShoppingCartProductProps> = ({ item }) => {
                     }}
                   />
                 </IconButton>
-                <Typography mt="5px">{amount}</Typography>
+                <Typography mt="5px">{item.amout}</Typography>
                 <IconButton aria-label="delete">
                   <MinimizeIcon
                     fontSize="large"
                     sx={{ paddingBottom: "13px" }}
                     onClick={() => {
-                      if (amount === 1) {
+                      if (item.amout === 1) {
                         dispatch(deleteShoppingCartItems(item.product.id));
-                      } else if (amount > 1) {
-                        setAmount(amount - 1);
+                      } else if (item.amout > 1) {
                         dispatch(
                           updateShoppingCart({
                             product: item.product,
-                            amout: amount - 1,
+                            amout: item.amout - 1,
                             totalPrice:
-                              (amount - 1) *
+                              (item.amout - 1) *
                               item.product.fields.priceWithDiscount,
                           })
                         );
@@ -259,14 +257,13 @@ const ShoppingCartProduct: React.FC<IShoppingCartProductProps> = ({ item }) => {
                 <AddIcon
                   fontSize="small"
                   onClick={() => {
-                    if (amount < 6) {
-                      setAmount(amount + 1);
+                    if (item.amout < 6) {
                       dispatch(
                         updateShoppingCart({
                           product: item.product,
-                          amout: amount + 1,
+                          amout: item.amout + 1,
                           totalPrice:
-                            (amount + 1) *
+                            (item.amout + 1) *
                             item.product.fields.priceWithDiscount,
                         })
                       );
@@ -274,22 +271,21 @@ const ShoppingCartProduct: React.FC<IShoppingCartProductProps> = ({ item }) => {
                   }}
                 />
               </IconButton>
-              <Typography pt="3px">{amount}</Typography>
+              <Typography pt="3px">{item.amout}</Typography>
               <IconButton aria-label="delete">
                 <MinimizeIcon
                   fontSize="large"
                   sx={{ pb: "14px", pl: "10px" }}
                   onClick={() => {
-                    if (amount === 1) {
+                    if (item.amout === 1) {
                       dispatch(deleteShoppingCartItems(item.product.id));
-                    } else if (amount > 1) {
-                      setAmount(amount - 1);
+                    } else if (item.amout > 1) {
                       dispatch(
                         updateShoppingCart({
                           product: item.product,
-                          amout: amount - 1,
+                          amout: item.amout - 1,
                           totalPrice:
-                            (amount - 1) *
+                            (item.amout - 1) *
                             item.product.fields.priceWithDiscount,
                         })
                       );

@@ -10,7 +10,7 @@ import {
   Typography,
 } from "@mui/material";
 import React, { Fragment, useState } from "react";
-import { useAppDispatch } from "../../app/hooks";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import AddToShoppingCartButton from "../../shared/addToShoppingCartButton/addToShoppingCartButton";
 import DiscountDisplay from "../../shared/discoundDisplay/discountDisplay";
 import PriceDisplay from "../../shared/priceDisplay/priceDisplay";
@@ -19,12 +19,14 @@ import RatingDisplay from "../../shared/ratingDisplay/ratingDisplay";
 import {
   addToShoppingCart,
   deleteShoppingCartItems,
+  selectShoppingCart,
   updateShoppingCart,
 } from "../shoppingCart/shoppingCartSlice";
 import { ProductType } from "./product.type";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import AddIcon from "@mui/icons-material/Add";
 import MinimizeIcon from "@mui/icons-material/Minimize";
+import { ShoppingCartItemType } from "../shoppingCart/shoppingCart.type";
 
 interface IProduct {
   product: ProductType;
@@ -34,6 +36,7 @@ const Product: React.FC<IProduct> = ({ product }) => {
   const dispatch = useAppDispatch();
   const [showAmount, setShowAmount] = useState<boolean>(false);
   const [amount, setAmount] = useState<number>(1);
+  const { items } = useAppSelector(selectShoppingCart);
 
   return (
     <Fragment>
@@ -85,7 +88,7 @@ const Product: React.FC<IProduct> = ({ product }) => {
           </Grid>
         </CardContent>
         <CardActions style={{ textAlign: "center", justifyContent: "center" }}>
-          {!showAmount ? (
+          {/* {!showAmount ? (
             <Button
               sx={{
                 display: { xs: "none", sm: "flex" },
@@ -176,6 +179,106 @@ const Product: React.FC<IProduct> = ({ product }) => {
                 </Box>
               </Grid>
             </>
+          )} */}
+
+          {!showAmount ? (
+            <Button
+              sx={{
+                display: { xs: "none", sm: "flex" },
+                width: "80%",
+                borderRadius: "5px",
+                bgcolor: "yellow",
+                color: "black",
+              }}
+              size="small"
+              variant="contained"
+              startIcon={<AddShoppingCartIcon sx={{ marginLeft: "10px" }} />}
+              onClick={() => {
+                dispatch(
+                  addToShoppingCart({
+                    product,
+                    amout: amount,
+                    totalPrice: product.fields.priceWithDiscount,
+                  })
+                );
+                setShowAmount(true);
+              }}
+            >
+              افزودن به سبد خرید
+            </Button>
+          ) : (
+            // items.map((item:ShoppingCartItemType) => ((item.product.id === product.id) ? <IncreaseDecreaseAmountButton item={item} />  : " "))
+            items.map((item: ShoppingCartItemType) =>
+              item.product.id === product.id ? (
+                <>
+                  <Grid
+                    sx={{
+                      display: { xs: "none", sm: "flex" },
+                      height: "20px",
+                      mx: "auto",
+                      textAlign: "center",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        display: "flex",
+                        width: "110px",
+                        height: "35px",
+                        borderRadius: "5px",
+                        justifyContent: "space-between",
+                        bgcolor: "yellow",
+                      }}
+                    >
+                      <IconButton aria-label="delete">
+                        <AddIcon
+                          fontSize="small"
+                          onClick={() => {
+                            if (item.amout < 6) {
+                              dispatch(
+                                updateShoppingCart({
+                                  product,
+                                  amout: item.amout + 1,
+                                  totalPrice:
+                                    (item.amout + 1) *
+                                    product.fields.priceWithDiscount,
+                                })
+                              );
+                            }
+                          }}
+                        />
+                      </IconButton>
+                      <Typography mt="5px">{item.amout}</Typography>
+                      <IconButton aria-label="delete">
+                        <MinimizeIcon
+                          fontSize="large"
+                          sx={{ paddingBottom: "13px" }}
+                          onClick={() => {
+                            if (item.amout === 1) {
+                              setShowAmount(false);
+                              dispatch(deleteShoppingCartItems(product.id));
+                            } else if (item.amout > 1) {
+                              dispatch(
+                                updateShoppingCart({
+                                  product: product,
+                                  amout: item.amout - 1,
+                                  totalPrice:
+                                    (item.amout - 1) *
+                                    product.fields.priceWithDiscount,
+                                })
+                              );
+                            }
+                          }}
+                        />
+                      </IconButton>
+                    </Box>
+                  </Grid>
+                </>
+              ) : (
+                " "
+              )
+            )
           )}
         </CardActions>
       </Card>

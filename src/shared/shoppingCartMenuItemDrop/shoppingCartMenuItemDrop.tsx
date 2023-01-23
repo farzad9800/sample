@@ -20,7 +20,7 @@ import KeyboardDoubleArrowLeftIcon from "@mui/icons-material/KeyboardDoubleArrow
 import product1 from "../../../assets/images/product1.jpg";
 import SearchIcon from "@mui/icons-material/Search";
 import { ShoppingCartItemType } from "../../features/shoppingCart/shoppingCart.type";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAppDispatch } from "../../app/hooks";
 import {
   updateShoppingCart,
@@ -39,6 +39,11 @@ const ShoppingCartMenuItemDrop: React.FC<IShoppingCartProductProps> = ({
   const [totalPrice, setTotalPrice] = useState<number>(
     item.product.fields.priceWithDiscount
   );
+
+  useEffect(() => {
+    setTotalPrice(amount * item.product.fields.priceWithDiscount);
+  }, [amount]);
+  
   return (
     <>
       <MenuItem sx={{ mb: "5px" }}>
@@ -75,14 +80,13 @@ const ShoppingCartMenuItemDrop: React.FC<IShoppingCartProductProps> = ({
                 <AddIcon
                   fontSize="small"
                   onClick={() => {
-                    if (amount < 6) {
-                      setAmount(amount + 1);
+                    if (item.amout < 6) {
                       dispatch(
                         updateShoppingCart({
                           product: item.product,
-                          amout: amount + 1,
+                          amout: item.amout + 1,
                           totalPrice:
-                            (amount + 1) *
+                            (item.amout + 1) *
                             item.product.fields.priceWithDiscount,
                         })
                       );
@@ -90,22 +94,21 @@ const ShoppingCartMenuItemDrop: React.FC<IShoppingCartProductProps> = ({
                   }}
                 />
               </IconButton>
-              <Typography mt="7px">{amount}</Typography>
+              <Typography mt="7px">{item.amout}</Typography>
               <IconButton aria-label="delete">
                 <MinimizeIcon
                   fontSize="large"
                   sx={{ paddingBottom: "12px" }}
                   onClick={() => {
-                    if (amount === 1) {
+                    if (item.amout === 1) {
                       dispatch(deleteShoppingCartItems(item.product.id));
-                    } else if (amount > 1) {
-                      setAmount(amount - 1);
+                    } else if (item.amout > 1) {
                       dispatch(
                         updateShoppingCart({
                           product: item.product,
-                          amout: amount - 1,
+                          amout: item.amout - 1,
                           totalPrice:
-                            (amount - 1) *
+                            (item.amout - 1) *
                             item.product.fields.priceWithDiscount,
                         })
                       );
@@ -153,7 +156,7 @@ const ShoppingCartMenuItemDrop: React.FC<IShoppingCartProductProps> = ({
             </ListItem>
             <ListItem sx={{ justifyContent: "end" }}>
               <Typography variant="subtitle1" mr="5px">
-                {item.product.fields.priceWithDiscount}
+              {totalPrice}
               </Typography>
               <Typography variant="caption" mr="5px">
                 تومان

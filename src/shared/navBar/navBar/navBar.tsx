@@ -32,6 +32,7 @@ import { useAppSelector } from "../../../app/hooks";
 import { selectShoppingCart } from "../../../features/shoppingCart/shoppingCartSlice";
 import { ShoppingCartItemType } from "../../../features/shoppingCart/shoppingCart.type";
 import ShoppingCartMenuItemDrop from "../../shoppingCartMenuItemDrop/shoppingCartMenuItemDrop";
+import NavBarSearchInput from "../navBarSearchInput/navBarSearchInput";
 
 const NavBar = () => {
   const { items } = useAppSelector(selectShoppingCart);
@@ -60,21 +61,7 @@ const NavBar = () => {
       <NavBarLogo />
 
       <Grid sx={{ display: { xs: "none", md: "flex" } }} md={4}>
-        <TextField
-          id="input-with-icon-textfield"
-          placeholder="جستجو"
-          size="small"
-          fullWidth
-          sx={{ bgcolor: "#f9f8f8", height: "40px" }}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <SearchIcon />
-              </InputAdornment>
-            ),
-          }}
-          variant="outlined"
-        />
+        <NavBarSearchInput />
       </Grid>
 
       <Grid
@@ -156,7 +143,7 @@ const NavBar = () => {
                   style={{ textDecoration: "none", color: "black" }}
                 >
                   <Grid container>
-                    <Typography variant="caption" ml="10px">
+                    <Typography variant="subtitle2" ml="10px">
                       مشاهده سبد خرید
                     </Typography>
                     {items.length ? (
@@ -190,27 +177,31 @@ const NavBar = () => {
 
             <Divider />
 
-{items.length ? (            <MenuItem>
-              <Grid container xs={6}>
-                <Typography>
-                  {" "}
-                  {items.reduce(
-                    (accumulator, item) => accumulator + item.totalPrice,
-                    0
-                  )}
-                </Typography>
-                <Typography mr="5px">تومان</Typography>
-              </Grid>
-              <Grid xs={6} sx={{ textAlign: "center" }}>
-                <Button
-                  variant="contained"
-                  size="small"
-                  sx={{ bgcolor: "yellow", color: "black", width: "80%" }}
-                >
-                  پرداخت
-                </Button>
-              </Grid>
-            </MenuItem>) : ""}
+            {items.length ? (
+              <MenuItem>
+                <Grid container xs={6}>
+                  <Typography>
+                    {" "}
+                    {items.reduce(
+                      (accumulator, item) => accumulator + item.totalPrice,
+                      0
+                    )}
+                  </Typography>
+                  <Typography mr="5px">تومان</Typography>
+                </Grid>
+                <Grid xs={6} sx={{ textAlign: "center" }}>
+                  <Button
+                    variant="contained"
+                    size="small"
+                    sx={{ bgcolor: "yellow", color: "black", width: "80%" }}
+                  >
+                    پرداخت
+                  </Button>
+                </Grid>
+              </MenuItem>
+            ) : (
+              ""
+            )}
           </Menu>
         </Grid>
         <Grid sx={{ mr: { xs: "20px", md: "40px" } }} mt="5px">
@@ -222,21 +213,7 @@ const NavBar = () => {
         </Grid>
       </Grid>
       <Grid container sx={{ display: { xs: "flex", md: "none" }, mt: "20px" }}>
-        <TextField
-          id="input-with-icon-textfield"
-          placeholder="جستجو"
-          size="small"
-          fullWidth
-          sx={{ bgcolor: "#f9f8f8", height: "40px" }}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <SearchIcon />
-              </InputAdornment>
-            ),
-          }}
-          variant="outlined"
-        />
+        <NavBarSearchInput />
       </Grid>
     </Grid>
   );
