@@ -1,14 +1,11 @@
 import { Typography } from "@mui/material";
 import { title } from "process";
 
-
 interface IProductCartTitleProps {
-    title: string;
-  }
+  title: string;
+}
 
-
-
-const productCartTitle:React.FC<IProductCartTitleProps> = ({title}) => {
+const productCartTitle: React.FC<IProductCartTitleProps> = ({ title }) => {
   return (
     <Typography
       variant="body2"

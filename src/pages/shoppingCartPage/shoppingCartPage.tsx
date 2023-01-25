@@ -1,14 +1,7 @@
 import { Grid } from "@mui/material";
 import Typography from "@mui/material/Typography";
-import { useEffect } from "react";
-import { useAppSelector, useAppDispatch } from "../../app/hooks";
-import Product from "../../features/products/product";
-import { ProductType } from "../../features/products/product.type";
-import products from "../../features/products/products";
-import {
-  ShoppingCartItemType,
-  ShoppingCartType,
-} from "../../features/shoppingCart/shoppingCart.type";
+import { useAppSelector } from "../../app/hooks";
+import { ShoppingCartItemType } from "../../features/shoppingCart/shoppingCart.type";
 import ShoppingCartProduct from "../../features/shoppingCart/shoppingCartProduct";
 import { selectShoppingCart } from "../../features/shoppingCart/shoppingCartSlice";
 import NavBar from "../../shared/navBar/navBar/navBar";
@@ -16,7 +9,7 @@ import ShoppingCartInvoice from "../../shared/shoppingCartInvoice/shoppingCartIn
 
 interface IShoppingCartComponentsProps {}
 
-const ShoppingCartPage = () => {
+const ShoppingCartPage: React.FC<IShoppingCartComponentsProps> = () => {
   const { items } = useAppSelector(selectShoppingCart);
 
   return (
@@ -27,13 +20,18 @@ const ShoppingCartPage = () => {
         sx={{
           justifyContent: { xs: "center", lg: "space-between" },
           mt: "40px",
-          pb:"30px"
+          pb: "30px",
         }}
       >
-
-        {items.length ? (items.map((cartItem: ShoppingCartItemType) => (
-          <ShoppingCartProduct item={cartItem} />
-        ))) : (<Grid container pr="50px"><Typography>سبد خرید شما خالی است</Typography></Grid>)}
+        {items.length ? (
+          items.map((cartItem: ShoppingCartItemType) => (
+            <ShoppingCartProduct item={cartItem} />
+          ))
+        ) : (
+          <Grid container pr="50px">
+            <Typography>سبد خرید شما خالی است</Typography>
+          </Grid>
+        )}
         <ShoppingCartInvoice />
       </Grid>
     </>

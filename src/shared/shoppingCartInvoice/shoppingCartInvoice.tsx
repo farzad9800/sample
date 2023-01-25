@@ -7,9 +7,7 @@ import {
   Divider,
   Button,
 } from "@mui/material";
-import { useState } from "react";
 import { useAppSelector } from "../../app/hooks";
-import { ShoppingCartItemType } from "../../features/shoppingCart/shoppingCart.type";
 import { selectShoppingCart } from "../../features/shoppingCart/shoppingCartSlice";
 
 interface IShoppingCartInvoiceProps {}

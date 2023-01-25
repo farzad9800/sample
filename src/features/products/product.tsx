@@ -9,9 +9,8 @@ import {
   IconButton,
   Typography,
 } from "@mui/material";
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import AddToShoppingCartButton from "../../shared/addToShoppingCartButton/addToShoppingCartButton";
 import DiscountDisplay from "../../shared/discoundDisplay/discountDisplay";
 import PriceDisplay from "../../shared/priceDisplay/priceDisplay";
 import ProductCartTitle from "../../shared/productCartTitle/productCartTitle";
@@ -34,9 +33,15 @@ interface IProduct {
 
 const Product: React.FC<IProduct> = ({ product }) => {
   const dispatch = useAppDispatch();
-  const [showAmount, setShowAmount] = useState<boolean>(false);
+  const [showAmount, setShowAmount] = useState<boolean>(true);
   const [amount, setAmount] = useState<number>(1);
   const { items } = useAppSelector(selectShoppingCart);
+
+  useEffect(() => {
+    items.map((item: ShoppingCartItemType) =>
+      item.product.id === product.id ? setShowAmount(false) : ""
+    );
+  }, [showAmount]);
 
   return (
     <Fragment>
@@ -88,7 +93,7 @@ const Product: React.FC<IProduct> = ({ product }) => {
           </Grid>
         </CardContent>
         <CardActions style={{ textAlign: "center", justifyContent: "center" }}>
-          {/* {!showAmount ? (
+          {showAmount ? (
             <Button
               sx={{
                 display: { xs: "none", sm: "flex" },
@@ -101,6 +106,7 @@ const Product: React.FC<IProduct> = ({ product }) => {
               variant="contained"
               startIcon={<AddShoppingCartIcon sx={{ marginLeft: "10px" }} />}
               onClick={() => {
+                setShowAmount(false);
                 dispatch(
                   addToShoppingCart({
                     product,
@@ -108,175 +114,78 @@ const Product: React.FC<IProduct> = ({ product }) => {
                     totalPrice: product.fields.priceWithDiscount,
                   })
                 );
-                setShowAmount(true);
               }}
             >
               افزودن به سبد خرید
             </Button>
           ) : (
-            <>
-              <Grid
-                sx={{
-                  display: { xs: "none", sm: "flex" },
-                  height: "20px",
-                  mx: "auto",
-                  textAlign: "center",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <Box
-                  sx={{
-                    display: "flex",
-                    width: "110px",
-                    height: "35px",
-                    borderRadius: "5px",
-                    justifyContent: "space-between",
-                    bgcolor: "yellow",
-                  }}
-                >
-                  <IconButton aria-label="delete">
-                    <AddIcon
-                      fontSize="small"
-                      onClick={() => {
-                        if (amount < 6) {
-                          setAmount(amount + 1);
-                          dispatch(
-                            updateShoppingCart({
-                              product,
-                              amout: amount + 1,
-                              totalPrice:
-                                (amount + 1) * product.fields.priceWithDiscount,
-                            })
-                          );
-                        }
-                      }}
-                    />
-                  </IconButton>
-                  <Typography mt="5px">{amount}</Typography>
-                  <IconButton aria-label="delete">
-                    <MinimizeIcon
-                      fontSize="large"
-                      sx={{ paddingBottom: "13px" }}
-                      onClick={() => {
-                        setShowAmount(false);
-                        if (amount === 1) {
-                          dispatch(deleteShoppingCartItems(product.id));
-                        } else if (amount > 1) {
-                          setAmount(amount - 1);
-                          dispatch(
-                            updateShoppingCart({
-                              product: product,
-                              amout: amount - 1,
-                              totalPrice:
-                                (amount - 1) * product.fields.priceWithDiscount,
-                            })
-                          );
-                        }
-                      }}
-                    />
-                  </IconButton>
-                </Box>
-              </Grid>
-            </>
-          )} */}
-
-          {!showAmount ? (
-            <Button
-              sx={{
-                display: { xs: "none", sm: "flex" },
-                width: "80%",
-                borderRadius: "5px",
-                bgcolor: "yellow",
-                color: "black",
-              }}
-              size="small"
-              variant="contained"
-              startIcon={<AddShoppingCartIcon sx={{ marginLeft: "10px" }} />}
-              onClick={() => {
-                dispatch(
-                  addToShoppingCart({
-                    product,
-                    amout: amount,
-                    totalPrice: product.fields.priceWithDiscount,
-                  })
-                );
-                setShowAmount(true);
-              }}
-            >
-              افزودن به سبد خرید
-            </Button>
-          ) : (
-            // items.map((item:ShoppingCartItemType) => ((item.product.id === product.id) ? <IncreaseDecreaseAmountButton item={item} />  : " "))
             items.map((item: ShoppingCartItemType) =>
               item.product.id === product.id ? (
-                <>
-                  <Grid
+                <Grid
+                  sx={{
+                    display: { xs: "none", sm: "flex" },
+                    height: "20px",
+                    mx: "auto",
+                    textAlign: "center",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Box
                     sx={{
-                      display: { xs: "none", sm: "flex" },
-                      height: "20px",
-                      mx: "auto",
-                      textAlign: "center",
-                      justifyContent: "center",
-                      alignItems: "center",
+                      display: "flex",
+                      width: "110px",
+                      height: "35px",
+                      borderRadius: "5px",
+                      justifyContent: "space-between",
+                      bgcolor: "yellow",
                     }}
                   >
-                    <Box
-                      sx={{
-                        display: "flex",
-                        width: "110px",
-                        height: "35px",
-                        borderRadius: "5px",
-                        justifyContent: "space-between",
-                        bgcolor: "yellow",
-                      }}
-                    >
-                      <IconButton aria-label="delete">
-                        <AddIcon
-                          fontSize="small"
-                          onClick={() => {
-                            if (item.amout < 6) {
-                              dispatch(
-                                updateShoppingCart({
-                                  product,
-                                  amout: item.amout + 1,
-                                  totalPrice:
-                                    (item.amout + 1) *
-                                    product.fields.priceWithDiscount,
-                                })
-                              );
-                            }
-                          }}
-                        />
-                      </IconButton>
-                      <Typography mt="5px">{item.amout}</Typography>
-                      <IconButton aria-label="delete">
-                        <MinimizeIcon
-                          fontSize="large"
-                          sx={{ paddingBottom: "13px" }}
-                          onClick={() => {
-                            if (item.amout === 1) {
-                              setShowAmount(false);
-                              dispatch(deleteShoppingCartItems(product.id));
-                            } else if (item.amout > 1) {
-                              dispatch(
-                                updateShoppingCart({
-                                  product: product,
-                                  amout: item.amout - 1,
-                                  totalPrice:
-                                    (item.amout - 1) *
-                                    product.fields.priceWithDiscount,
-                                })
-                              );
-                            }
-                          }}
-                        />
-                      </IconButton>
-                    </Box>
-                  </Grid>
-                </>
+                    <IconButton aria-label="delete">
+                      <AddIcon
+                        fontSize="small"
+                        onClick={() => {
+                          if (item.amout < 6) {
+                            dispatch(
+                              updateShoppingCart({
+                                product,
+                                amout: item.amout + 1,
+                                totalPrice:
+                                  (item.amout + 1) *
+                                  product.fields.priceWithDiscount,
+                              })
+                            );
+                          }
+                        }}
+                      />
+                    </IconButton>
+                    <Typography mt="5px">{item.amout}</Typography>
+                    <IconButton aria-label="delete">
+                      <MinimizeIcon
+                        fontSize="large"
+                        sx={{ paddingBottom: "13px" }}
+                        onClick={() => {
+                          if (item.amout === 1) {
+                            setShowAmount(true);
+                            dispatch(deleteShoppingCartItems(product.id));
+                          } else if (item.amout > 1) {
+                            dispatch(
+                              updateShoppingCart({
+                                product: product,
+                                amout: item.amout - 1,
+                                totalPrice:
+                                  (item.amout - 1) *
+                                  product.fields.priceWithDiscount,
+                              })
+                            );
+                          }
+                        }}
+                      />
+                    </IconButton>
+                  </Box>
+                </Grid>
               ) : (
-                " "
+                <></>
               )
             )
           )}
@@ -356,7 +265,7 @@ const Product: React.FC<IProduct> = ({ product }) => {
                   </Typography>
                 </Typography>
               </Grid>
-              {!showAmount ? (
+              {showAmount ? (
                 <Button
                   size="small"
                   variant="contained"
@@ -367,6 +276,7 @@ const Product: React.FC<IProduct> = ({ product }) => {
                     color: "black",
                   }}
                   onClick={() => {
+                    setShowAmount(false);
                     dispatch(
                       addToShoppingCart({
                         product,
@@ -374,78 +284,81 @@ const Product: React.FC<IProduct> = ({ product }) => {
                         totalPrice: product.fields.priceWithDiscount,
                       })
                     );
-                    setShowAmount(true);
                   }}
                 >
                   <AddShoppingCartIcon fontSize="small" />
                 </Button>
               ) : (
-                <>
-                  <Grid
-                    container
-                    xs={5}
-                    sx={{
-                      display: { xs: "flex", sm: "none" },
-                      justifyContent: "end",
-                    }}
-                  >
-                    <Box
+                items.map((item: ShoppingCartItemType) =>
+                  item.product.id === product.id ? (
+                    <Grid
+                      container
+                      xs={5}
                       sx={{
-                        display: "flex",
-                        width: "70px",
-                        height: "25px",
-                        borderRadius: "5px",
-                        justifyContent: "space-between",
-                        bgcolor: "yellow",
-                        mr: "5px",
+                        display: { xs: "flex", sm: "none" },
+                        justifyContent: "end",
                       }}
                     >
-                      <IconButton aria-label="delete">
-                        <AddIcon
-                          fontSize="small"
-                          onClick={() => {
-                            if (amount < 6) {
-                              setAmount(amount + 1);
-                              dispatch(
-                                updateShoppingCart({
-                                  product,
-                                  amout: amount + 1,
-                                  totalPrice:
-                                    (amount + 1) *
-                                    product.fields.priceWithDiscount,
-                                })
-                              );
-                            }
-                          }}
-                        />
-                      </IconButton>
-                      <Typography variant="subtitle1">{amount}</Typography>
-                      <IconButton aria-label="delete">
-                        <MinimizeIcon
-                          fontSize="large"
-                          sx={{ pb: "12px", pl: "15px" }}
-                          onClick={() => {
-                            setShowAmount(false);
-                            if (amount === 1) {
-                              dispatch(deleteShoppingCartItems(product.id));
-                            } else if (amount > 1) {
-                              setAmount(amount - 1);
-                              dispatch(
-                                updateShoppingCart({
-                                  product: product,
-                                  amout: amount - 1,
-                                  totalPrice:
-                                    (amount - 1) *
-                                    product.fields.priceWithDiscount,
-                                })
-                              );
-                            }
-                          }}
-                        />
-                      </IconButton>
-                    </Box>
-                  </Grid>
-                </>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          width: "70px",
+                          height: "25px",
+                          borderRadius: "5px",
+                          justifyContent: "space-between",
+                          bgcolor: "yellow",
+                          mr: "5px",
+                        }}
+                      >
+                        <IconButton aria-label="delete">
+                          <AddIcon
+                            fontSize="small"
+                            onClick={() => {
+                              if (item.amout < 6) {
+                                dispatch(
+                                  updateShoppingCart({
+                                    product,
+                                    amout: item.amout + 1,
+                                    totalPrice:
+                                      (item.amout + 1) *
+                                      product.fields.priceWithDiscount,
+                                  })
+                                );
+                              }
+                            }}
+                          />
+                        </IconButton>
+                        <Typography variant="subtitle1">
+                          {item.amout}
+                        </Typography>
+                        <IconButton aria-label="delete">
+                          <MinimizeIcon
+                            fontSize="large"
+                            sx={{ pb: "12px", pl: "15px" }}
+                            onClick={() => {
+                              if (item.amout === 1) {
+                                setShowAmount(true);
+                                dispatch(deleteShoppingCartItems(product.id));
+                              } else if (item.amout > 1) {
+                                dispatch(
+                                  updateShoppingCart({
+                                    product: product,
+                                    amout: item.amout - 1,
+                                    totalPrice:
+                                      (item.amout - 1) *
+                                      product.fields.priceWithDiscount,
+                                  })
+                                );
+                              }
+                            }}
+                          />
+                        </IconButton>
+                      </Box>
+                    </Grid>
+                  ) : (
+                    <></>
+                  )
+                )
               )}
             </Grid>
           </CardContent>

@@ -16,7 +16,11 @@ const Products: React.FC<IProductsComponentsProps> = () => {
   }, []);
 
   if (status === "loading") {
-    return <Grid container sx={{justifyContent:"center", mt:"90px"}}><CircularProgress /></Grid>;
+    return (
+      <Grid container sx={{ justifyContent: "center", mt: "90px" }}>
+        <CircularProgress />
+      </Grid>
+    );
   }
 
   return (

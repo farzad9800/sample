@@ -10,9 +10,7 @@ import {
   CardContent,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-import CloseIcon from "@mui/icons-material/Close";
 import MinimizeIcon from "@mui/icons-material/Minimize";
-import product1 from "../../assets/images/product1.jpg";
 import CircleIcon from "@mui/icons-material/Circle";
 import GppGoodIcon from "@mui/icons-material/GppGood";
 import ElectricRickshawIcon from "@mui/icons-material/ElectricRickshaw";
@@ -208,19 +206,6 @@ const ShoppingCartProduct: React.FC<IShoppingCartProductProps> = ({ item }) => {
         </Grid>
       </Grid>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
       <Card
         sx={{
           display: { xs: "flex", md: "none" },
@@ -240,7 +225,11 @@ const ShoppingCartProduct: React.FC<IShoppingCartProductProps> = ({ item }) => {
             marginLeft: "8px",
           }}
         >
-          <img src={item.product.fields.image[0].url} width="100px" height="140px" />
+          <img
+            src={item.product.fields.image[0].url}
+            width="100px"
+            height="140px"
+          />
 
           <Grid container sx={{ justifyContent: "end" }} mt="15px">
             <Box

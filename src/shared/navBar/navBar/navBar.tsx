@@ -7,27 +7,15 @@ import {
   Menu,
   MenuItem,
   Typography,
-  List,
-  ListItem,
   Divider,
   Button,
-  InputAdornment,
-  TextField,
 } from "@mui/material";
 import React from "react";
 import { Link } from "react-router-dom";
 import NavBarLogo from "../navBArLogo/navBarLogo";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import PersonIcon from "@mui/icons-material/Person";
-import AddIcon from "@mui/icons-material/Add";
-import CircleIcon from "@mui/icons-material/Circle";
-import GppGoodIcon from "@mui/icons-material/GppGood";
-import ViewAgendaIcon from "@mui/icons-material/ViewAgenda";
-import ElectricRickshawIcon from "@mui/icons-material/ElectricRickshaw";
-import MinimizeIcon from "@mui/icons-material/Minimize";
 import KeyboardDoubleArrowLeftIcon from "@mui/icons-material/KeyboardDoubleArrowLeft";
-import product1 from "../../../assets/images/product1.jpg";
-import SearchIcon from "@mui/icons-material/Search";
 import { useAppSelector } from "../../../app/hooks";
 import { selectShoppingCart } from "../../../features/shoppingCart/shoppingCartSlice";
 import { ShoppingCartItemType } from "../../../features/shoppingCart/shoppingCart.type";
