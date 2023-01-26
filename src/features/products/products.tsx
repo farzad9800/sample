@@ -8,7 +8,7 @@ import { selectProducts, getProductAsync } from "./productSlice";
 interface IProductsComponentsProps {}
 
 const Products: React.FC<IProductsComponentsProps> = () => {
-  const { products, status } = useAppSelector(selectProducts);
+  const { products, searchProducts, status } = useAppSelector(selectProducts);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -41,7 +41,7 @@ const Products: React.FC<IProductsComponentsProps> = () => {
           همه محصولات
         </Typography>
       </Grid>
-      {products.map((item: ProductType) => (
+      {searchProducts.map((item: ProductType) => (
         <Product key={item.id} product={item} />
       ))}
     </Grid>
