@@ -2,15 +2,23 @@ import {
   MenuItem,
   Grid,
   Box,
+  IconButton,
   Typography,
   List,
   ListItem,
   Divider,
 } from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
 import CircleIcon from "@mui/icons-material/Circle";
 import GppGoodIcon from "@mui/icons-material/GppGood";
+import MinimizeIcon from "@mui/icons-material/Minimize";
 import { ShoppingCartItemType } from "../../features/shoppingCart/shoppingCart.type";
 import { useEffect, useState } from "react";
+import { useAppDispatch } from "../../app/hooks";
+import {
+  updateShoppingCart,
+  deleteShoppingCartItems,
+} from "../../features/shoppingCart/shoppingCartSlice";
 
 interface IShoppingCartProductProps {
   item: ShoppingCartItemType;
@@ -19,13 +27,15 @@ interface IShoppingCartProductProps {
 const ShoppingCartMenuItemDrop: React.FC<IShoppingCartProductProps> = ({
   item,
 }) => {
+  const dispatch = useAppDispatch();
+  const [amount, setAmount] = useState<number>(item.amout);
   const [totalPrice, setTotalPrice] = useState<number>(
     item.product.fields.priceWithDiscount
   );
 
   useEffect(() => {
-    setTotalPrice(item.amout * item.product.fields.priceWithDiscount);
-  }, [item.amout]);
+    setTotalPrice(amount * item.product.fields.priceWithDiscount);
+  }, [amount]);
 
   return (
     <>
@@ -38,7 +48,6 @@ const ShoppingCartMenuItemDrop: React.FC<IShoppingCartProductProps> = ({
               height="80px"
             />
           </Grid>
-
           <Grid
             sx={{
               height: "20px",
@@ -52,16 +61,54 @@ const ShoppingCartMenuItemDrop: React.FC<IShoppingCartProductProps> = ({
             <Box
               sx={{
                 display: "flex",
-                width: "80%",
-                height: "30px",
+                width: "85%",
+                height: "35px",
                 boxShadow: "1px 1px 1px black",
                 bgcolor: "yellow",
                 borderRadius: "10px",
-                justifyContent: "center",
+                justifyContent: "space-between",
               }}
             >
-              <Typography variant="subtitle1">{item.amout}</Typography>
-              <Typography variant="subtitle1">عدد</Typography>
+              <IconButton aria-label="delete">
+                <AddIcon
+                  fontSize="small"
+                  onClick={() => {
+                    if (item.amout < 6) {
+                      dispatch(
+                        updateShoppingCart({
+                          product: item.product,
+                          amout: item.amout + 1,
+                          totalPrice:
+                            (item.amout + 1) *
+                            item.product.fields.priceWithDiscount,
+                        })
+                      );
+                    }
+                  }}
+                />
+              </IconButton>
+              <Typography mt="7px">{item.amout}</Typography>
+              <IconButton aria-label="delete">
+                <MinimizeIcon
+                  fontSize="large"
+                  sx={{ paddingBottom: "12px" }}
+                  onClick={() => {
+                    if (item.amout === 1) {
+                      dispatch(deleteShoppingCartItems(item.product.id));
+                    } else if (item.amout > 1) {
+                      dispatch(
+                        updateShoppingCart({
+                          product: item.product,
+                          amout: item.amout - 1,
+                          totalPrice:
+                            (item.amout - 1) *
+                            item.product.fields.priceWithDiscount,
+                        })
+                      );
+                    }
+                  }}
+                />
+              </IconButton>
             </Box>
           </Grid>
         </Grid>
