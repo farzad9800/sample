@@ -350,9 +350,9 @@ const Product: React.FC<IProduct> = ({ product }) => {
               color="black"
               style={{ textAlign: "start", paddingBottom: "10px" }}
             >
-              {product.fields.name.length < 27
+              {product.fields.name.length < 24
                 ? product.fields.name
-                : product.fields.name.slice(0, 27) + "..."}
+                : product.fields.name.slice(0, 24) + "..."}
             </Typography>
             <Grid container mb="8px" justifyContent="space-between">
               <DiscountDisplay

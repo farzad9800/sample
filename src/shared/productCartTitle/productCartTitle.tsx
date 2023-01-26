@@ -12,7 +12,7 @@ const productCartTitle: React.FC<IProductCartTitleProps> = ({ title }) => {
       color="black"
       style={{ textAlign: "start", paddingBottom: "10px" }}
     >
-      {title.length < 40 ? title : title.slice(0, 40) + "..."}
+      {title.length < 38 ? title : title.slice(0, 38) + "..."}
     </Typography>
   );
 };
