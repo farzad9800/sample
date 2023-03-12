@@ -4,10 +4,12 @@ import { ShoppingCartType, ShoppingCartItemType } from "./shoppingCart.type";
 
 interface ShoppingCartState {
   items: ShoppingCartItemType[];
+  searchProductsCart: ShoppingCartItemType[];
 }
 
 const initialState: ShoppingCartState = {
   items: [],
+  searchProductsCart: [],
 };
 
 export const shoppingcartSlice = createSlice({
@@ -19,6 +21,7 @@ export const shoppingcartSlice = createSlice({
       action: PayloadAction<ShoppingCartItemType>
     ) => {
       state.items.push(action.payload);
+      state.searchProductsCart.push(action.payload);
     },
 
     updateShoppingCart: (
@@ -30,10 +33,23 @@ export const shoppingcartSlice = createSlice({
           ? (item = action.payload)
           : item
       );
+      state.searchProductsCart = state.searchProductsCart.map((item: ShoppingCartItemType) =>
+      item.product.id === action.payload.product.id
+        ? (item = action.payload)
+        : item
+    );
     },
     deleteShoppingCartItems: (state: ShoppingCartState, action) => {
       state.items = state.items.filter(
         (item: ShoppingCartItemType) => item.product.id !== action.payload
+      );
+      state.searchProductsCart = state.searchProductsCart.filter(
+        (item: ShoppingCartItemType) => item.product.id !== action.payload
+      );
+    },
+    searchProductCart: (state: ShoppingCartState, action: PayloadAction<string>) => {
+      state.searchProductsCart = state.items.filter((item: ShoppingCartItemType) =>
+        item.product.fields.name.includes(action.payload)
       );
     },
   },
@@ -43,6 +59,7 @@ export const {
   addToShoppingCart,
   updateShoppingCart,
   deleteShoppingCartItems,
+  searchProductCart,
 } = shoppingcartSlice.actions;
 
 export const selectShoppingCart = (state: RootState) => state.shoppingcart;

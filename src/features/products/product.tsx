@@ -26,6 +26,9 @@ import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import AddIcon from "@mui/icons-material/Add";
 import MinimizeIcon from "@mui/icons-material/Minimize";
 import { ShoppingCartItemType } from "../shoppingCart/shoppingCart.type";
+import ProductDetailPage from "../../pages/productDetailPage/productDetailPage";
+import { generatePath, Link, Route, Routes } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 interface IProduct {
   product: ProductType;
@@ -36,6 +39,7 @@ const Product: React.FC<IProduct> = ({ product }) => {
   const [showAmount, setShowAmount] = useState<boolean>(true);
   const [amount, setAmount] = useState<number>(1);
   const { items } = useAppSelector(selectShoppingCart);
+  const navigate = useNavigate();
 
   useEffect(() => {
     items.map((item: ShoppingCartItemType) =>
@@ -237,6 +241,14 @@ const Product: React.FC<IProduct> = ({ product }) => {
       );
     }
   };
+  const [id, setId] = useState(product.id);
+
+  const selectHandler = () => {
+    setId(product.id);
+    console.log(product.id);
+    console.log(id);
+    product.id && navigate(generatePath("productdetail/:id", { id }));
+  };
 
   return (
     <Fragment>
@@ -255,38 +267,40 @@ const Product: React.FC<IProduct> = ({ product }) => {
           pb: "10px",
         }}
       >
-        <Grid container xs={11} margin="auto">
-          <CardMedia>
-            <img
-              src={product.fields.image[0].url}
-              width={product.fields.image[0].width}
-              height={product.fields.image[0].height}
-              style={{ borderRadius: "10px" }}
-            />
-          </CardMedia>
-        </Grid>
+        <Box onClick={selectHandler}>
+          <Grid container xs={11} margin="auto">
+            <CardMedia>
+              <img
+                src={product.fields.image[0].url}
+                width={product.fields.image[0].width}
+                height={product.fields.image[0].height}
+                style={{ borderRadius: "10px" }}
+              />
+            </CardMedia>
+          </Grid>
 
-        <CardContent sx={{ padding: "15px" }}>
-          <ProductCartTitle title={product.fields.name} />
+          <CardContent sx={{ padding: "15px" }}>
+            <ProductCartTitle title={product.fields.name} />
 
-          <Grid container>
-            <DiscountDisplay
-              discount={product.fields.discount}
-              price={product.fields.price}
-            />
-            <RatingDisplay
-              rating={product.fields.rating}
-              reviews={product.fields.reviews}
-            />
-            <Grid xs={12}>
-              <Grid container justifyContent="space-between">
-                <PriceDisplay
-                  priceWithDiscount={product.fields.priceWithDiscount}
-                />
+            <Grid container>
+              <DiscountDisplay
+                discount={product.fields.discount}
+                price={product.fields.price}
+              />
+              <RatingDisplay
+                rating={product.fields.rating}
+                reviews={product.fields.reviews}
+              />
+              <Grid xs={12}>
+                <Grid container justifyContent="space-between">
+                  <PriceDisplay
+                    priceWithDiscount={product.fields.priceWithDiscount}
+                  />
+                </Grid>
               </Grid>
             </Grid>
-          </Grid>
-        </CardContent>
+          </CardContent>
+        </Box>
         <CardActions style={{ textAlign: "center", justifyContent: "center" }}>
           {showAmount ? (
             <Button
@@ -330,12 +344,14 @@ const Product: React.FC<IProduct> = ({ product }) => {
           px: "2px",
         }}
       >
-        <CardMedia>
-          <img
-            src={product.fields.image[0].url}
-            style={{ width: "85px", padding: "5px" }}
-          />
-        </CardMedia>
+        <Box onClick={selectHandler}>
+          <CardMedia>
+            <img
+              src={product.fields.image[0].url}
+              style={{ width: "85px", padding: "5px" }}
+            />
+          </CardMedia>
+        </Box>
         <Grid container sx={{ display: "flex", flexDirection: "column" }}>
           <CardContent
             sx={{

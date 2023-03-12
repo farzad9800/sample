@@ -5,7 +5,12 @@ import { searchProduct } from "../../../features/products/productSlice";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 
 
-const NavBarSearchInput = () => {
+
+interface INavBar {
+  searchHandler : (value: string) => void
+}
+
+const NavBarSearchInput: React.FC<INavBar> = ({searchHandler}) => {
 
   const [ search, setSearch ] = useState<string>("")
 
@@ -14,6 +19,8 @@ const NavBarSearchInput = () => {
   const onSearchHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value)
     dispatch(searchProduct(e.target.value))
+    // dispatch(searchProductCart(e.target.value))
+    searchHandler(e.target.value)
   }
 
 

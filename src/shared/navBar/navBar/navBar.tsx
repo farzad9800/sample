@@ -22,7 +22,12 @@ import { ShoppingCartItemType } from "../../../features/shoppingCart/shoppingCar
 import ShoppingCartMenuItemDrop from "../../shoppingCartMenuItemDrop/shoppingCartMenuItemDrop";
 import NavBarSearchInput from "../navBarSearchInput/navBarSearchInput";
 
-const NavBar = () => {
+
+interface INavBar {
+  searchHandler : (value: string) => void
+}
+
+const NavBar: React.FC<INavBar> = ({searchHandler}) => {
   const { items } = useAppSelector(selectShoppingCart);
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -49,7 +54,7 @@ const NavBar = () => {
       <NavBarLogo />
 
       <Grid sx={{ display: { xs: "none", md: "flex" } }} md={4}>
-        <NavBarSearchInput />
+        <NavBarSearchInput searchHandler= {searchHandler} />
       </Grid>
 
       <Grid
@@ -194,14 +199,14 @@ const NavBar = () => {
         </Grid>
         <Grid sx={{ mr: { xs: "20px", md: "40px" } }} mt="5px">
           <Tooltip title="حساب کاربری">
-            <Link to="/">
+            <Link to="/register">
               <PersonIcon fontSize="medium" sx={{ color: "black" }} />
             </Link>
           </Tooltip>
         </Grid>
       </Grid>
       <Grid container sx={{ display: { xs: "flex", md: "none" }, mt: "20px" }}>
-        <NavBarSearchInput />
+        <NavBarSearchInput searchHandler={searchHandler}/>
       </Grid>
     </Grid>
   );

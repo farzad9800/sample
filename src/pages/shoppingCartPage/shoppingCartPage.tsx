@@ -1,20 +1,27 @@
 import { Grid } from "@mui/material";
 import Typography from "@mui/material/Typography";
-import { useAppSelector } from "../../app/hooks";
+import { useAppSelector, useAppDispatch  } from "../../app/hooks";
 import { ShoppingCartItemType } from "../../features/shoppingCart/shoppingCart.type";
 import ShoppingCartProduct from "../../features/shoppingCart/shoppingCartProduct";
-import { selectShoppingCart } from "../../features/shoppingCart/shoppingCartSlice";
+import { searchProductCart, selectShoppingCart } from "../../features/shoppingCart/shoppingCartSlice";
 import NavBar from "../../shared/navBar/navBar/navBar";
 import ShoppingCartInvoice from "../../shared/shoppingCartInvoice/shoppingCartInvoice";
 
 interface IShoppingCartComponentsProps {}
 
 const ShoppingCartPage: React.FC<IShoppingCartComponentsProps> = () => {
-  const { items } = useAppSelector(selectShoppingCart);
+
+  const dispatch = useAppDispatch();
+
+  const { items, searchProductsCart } = useAppSelector(selectShoppingCart);
+
+  const navBarHandler = (value: string) => {
+    dispatch(searchProductCart(value))
+  }
 
   return (
     <>
-      <NavBar />
+      <NavBar searchHandler={navBarHandler} />
       <Grid
         container
         sx={{
@@ -24,7 +31,7 @@ const ShoppingCartPage: React.FC<IShoppingCartComponentsProps> = () => {
         }}
       >
         {items.length ? (
-          items.map((cartItem: ShoppingCartItemType) => (
+          searchProductsCart.map((cartItem: ShoppingCartItemType) => (
             <ShoppingCartProduct item={cartItem} />
           ))
         ) : (
